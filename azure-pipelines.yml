@@ -24,3 +24,14 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonarcloud'
+    organization: 'asharubendy-1'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'Asharubendy_Test'
+    cliProjectName: 'Test'
+    cliSources: '.'
+    
+- task: SonarCloudAnalyze@1
