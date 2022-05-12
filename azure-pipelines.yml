@@ -36,9 +36,12 @@ stages:
       inputs:
         SonarCloud: 'sonarcloud'
         organization: 'asharubendy-1'
-        scannerMode: 'MSBuild'
-        projectKey: 'Asharubendy-Test'
-        projectName: 'Test'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'Asharubendy_Test'
+        cliProjectName: 'Test'
+        cliSources: '.'
+
     - task: SonarCloudAnalyze@1
     - task: PyLint@0
       inputs:
