@@ -1,0 +1,61 @@
+
+trigger:
+- main
+
+variables:
+  azureServiceConnectionId: 'aa8b7018-f28b-4433-9efc-6c7f490fc7bc'
+  webAppName: 'TSItestpipeline'
+  vmImageName: 'ubuntu-latest'
+  environmentName: 'TSItestpipeline'
+  projectRoot: $(System.DefaultWorkingDirectory)
+  pythonVersion: '3.7'
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(pythonVersion)'
+      displayName: 'Use Python $(pythonVersion)'
+
+    - script: |
+        python -m venv antenv
+        source antenv/bin/activate
+        python -m pip install --upgrade pip
+        pip install setup
+        pip install -r requirements.txt
+      workingDirectory: $(projectRoot)
+      displayName: "Install requirements"
+
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonarcloud'
+        organization: 'asharubendy-1'
+        scannerMode: 'MSBuild'
+        projectKey: 'Asharubendy-Test'
+        projectName: 'Test'
+    - task: SonarCloudAnalyze@1
+    - task: PyLint@0
+      inputs:
+        modules: 'main.py'
+    
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(projectRoot)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Upload package'
+      artifact: drop
+
+      
+    
