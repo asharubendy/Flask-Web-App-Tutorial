@@ -38,9 +38,10 @@ stages:
         organization: 'asharubendy-1'
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: 'Asharubendy-Test'
+        cliProjectKey: 'Asharubendy_Test'
         cliProjectName: 'Test'
         cliSources: '.'
+        
         extraProperties: |
           sonar.c.file.suffixes=-
           sonar.cpp.file.suffixes=-
